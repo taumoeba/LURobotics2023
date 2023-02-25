@@ -1,0 +1,71 @@
+Just some pseudo-code representing the main algorithm for the robot
+
+Field layout:
+-----------------------------------------------------------
+| food  |                                     | recycling |
+|corner2|                   ***               |           |
+|--------                 *******             |-----------|
+|                           ***                           |
+|                                                         |
+|                                                         |
+|                                                         |
+|--------                 --------            ------------|
+| food  |          *      |start |      *     | recycling |
+|corner1|                 |square|            |           |
+-----------------------------------------------------------
+
+
+const int endSweepTime = 150; //seconds
+const int pathFollowDistance = 10; //cm
+
+// Setup
+initialize components
+verify sensors are returning valid data
+check distance to walls
+wait for activation signal
+activate dummy bot
+wait a couple seconds so dummy bot is free
+
+drive to food corner 1 (bottom left)
+drop matching chips
+drive to food corner 2 (top left)
+drop matching chips
+
+// Begin sweeping pattern
+while(elapsedTime <= endSweepTime)
+{
+	move(pathFollowDistance);
+	look for objects
+	if object found:
+		identify object
+		identify distance and angle
+		move to intercept position
+		confirm object identity
+		identify orientation
+		grab object using position and orientation data
+		if object is pedestal:
+			decide which stack to add to
+			rotate turntable to selected stack
+			place pedestal in turntable
+		else:
+			place duck in duck storage
+		return arm to neutral position
+		return to path
+	else:
+		if completed stack exists:
+			if reached open pedestal destination:
+				if time allows:
+					maneuver to stack-dropping position
+					drop stack
+					return to path
+				else:
+					drop stack outside of path but nearby
+					return to path
+}
+move to recycling area (ignoring path)
+orient so duck storage is facing wall
+dump ducks
+if still holding pedestals:
+	orient turntable above recycling area
+	drop pedestals
+DONE
