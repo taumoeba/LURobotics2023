@@ -1,5 +1,6 @@
 //Initialize systems
     //establish variables
+    //check that everything's working
 //Wait to be put down
 //Both motors drive forward pi(d)/l1 rotations
     //d is wheel diameter, l1 is distance travelled to reach right edge
