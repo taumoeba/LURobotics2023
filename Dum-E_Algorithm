@@ -1,0 +1,11 @@
+//Initialize systems
+    //establish variables
+//Wait to be put down
+//Both motors drive forward pi(d)/l1 rotations
+    //d is wheel diameter, l1 is distance travelled to reach right edge
+//Left motor rotate backward, right motor rotate forward until rotated 90 degrees Left
+//both motors rotate forward pi(d)/l2 rotations
+    //l2 is distance needed to reach middle of right edge
+//Wait until (last second)
+    //estimate: 175 seconds from start
+//activate arm
