@@ -1,0 +1,81 @@
+/*DummE Bot Main Code
+
+   -=-=-=- Outline -=-=-=-=-
+
+    1. Wait for signel from Main Bot
+    2. Go towards the Eastern Wall
+    3. if Leftern Stick Touches the souther wall point more north east
+    4. Once Both swithces are pressed back up and turn to the north
+    5. if leftern stick touches eastern wall point more west north.
+    6. once 45% of wall treversed flip lightswitch arm up 
+    7. Wait until 2 and a half min have elapsed since start of Compotition 
+    8. Charge forward untill both switches are pressed (the arm should have hit the swithch )
+
+
+
+*/
+
+#include <Servo.h>
+
+
+
+// Variables
+  //Motors
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(3);
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(4);
+int leftSpeed = 150;
+int rightSpeed =150;
+
+  //Servo
+Servo lightSwitchArm; //lightSwitchArm
+int lightSwitchArmPOS = 0;
+
+
+// Functions
+  //Mottor
+  void Forward()
+  {
+
+  }
+
+  //Servo
+ void ArmOnOff()
+ {
+  if ()
+  {
+      while (lightSwitchArmPOS = 0; lightSwitchArmPOS <= 180; lightSwitchArmPOS += 1) { // goes from 0 degrees to 180 degrees
+      // in steps of 1 degree
+      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                      // waits 15 ms for the servo to reach the position
+    }
+  }
+ }
+   
+
+
+void setup() {
+  //Testing Code only
+  Serial.begin(9600);
+
+  if (!AFMS.begin()) {         // create with the default frequency 1.6KHz
+    Serial.println("Could not find Motor Shield. Check wiring.");
+    while (1);
+  }
+  Serial.println("Motor Shield found.");
+
+
+
+
+  // Keep This code in main
+
+  leftMotor->setSpeed(leftSpeed);
+  rightMotor->setSpeed(rightSpeed);
+
+  lightSwitchArm.attach(4);
+  rightMotor->run(RELEASE);
+  leftMotor->run(RELEASE);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+}
