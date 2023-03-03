@@ -17,14 +17,25 @@
 
 #include <Servo.h>
 
+#include <Wire.h>
+#include <Adafruit_MotorShield.h>
+#include "utility/Adafruit_MS_PWMServoDriver.h"
+
+#include <time.h>
 
 
 // Variables
   //Motors
+Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *leftMotor = AFMS.getMotor(3);
 Adafruit_DCMotor *rightMotor = AFMS.getMotor(4);
 int leftSpeed = 150;
 int rightSpeed =150;
+
+// Timing increments 
+  int msec = 0, trigger = 10; // 10 second intervals for activations 
+  clock_t before = clock();
+  
 
   //Servo
 Servo lightSwitchArm; //lightSwitchArm
@@ -41,13 +52,24 @@ int lightSwitchArmPOS = 0;
   //Servo
  void ArmOnOff()
  {
-  if ()
-  {
-      while (lightSwitchArmPOS = 0; lightSwitchArmPOS <= 180; lightSwitchArmPOS += 1) { // goes from 0 degrees to 180 degrees
+ // if (lightSwitchArmPOS = 0 )
+  //{
+    while (lightSwitchArmPOS <= 180) 
+    { // goes from 0 degrees to 180 degrees
       // in steps of 1 degree
-      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                      // waits 15 ms for the servo to reach the position
+      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                   
+      lightSwitchArmPOS += 1;
+      delay(15);
     }
-  }
+ /* } else {
+   while (lightSwitchArmPOS >= 0) 
+    { // goes from 0 degrees to 180 degrees
+      // in steps of 1 degree
+      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                   
+      lightSwitchArmPOS -= 1;
+      delay(15);
+    }
+  }*/
  }
    
 
@@ -67,15 +89,37 @@ void setup() {
 
   // Keep This code in main
 
+  AFMS.begin();
+
   leftMotor->setSpeed(leftSpeed);
   rightMotor->setSpeed(rightSpeed);
 
-  lightSwitchArm.attach(4);
+  leftMotor->run(FORWARD);
+  rightMotor->run(FORWARD);
+  
   rightMotor->run(RELEASE);
   leftMotor->run(RELEASE);
+
+  lightSwitchArm.attach(4);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 
+      while (lightSwitchArmPOS <= 180) 
+    { // goes from 0 degrees to 180 degrees
+      // in steps of 1 degree
+      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                   
+      lightSwitchArmPOS += 1;
+      delay(15);
+    }
+   while (lightSwitchArmPOS >= 0) 
+    { // goes from 0 degrees to 180 degrees
+      // in steps of 1 degree
+      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                   
+      lightSwitchArmPOS -= 1;
+      delay(15);
+    } 
+
+      delay(100);
+    
 }
