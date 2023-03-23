@@ -1,10 +1,10 @@
 #ifndef ARDUINO_H
 #define ARDUINO_H
 
-class driveMotor
+class driveMotors
 {
     public:
-    driveMotor(int PWM1, int DIR1, int PWM2, int DIR2, int PWM3, int DIR3, int PWM4, int DIR4)
+    driveMotors(int PWM1, int DIR1, int PWM2, int DIR2, int PWM3, int DIR3, int PWM4, int DIR4)
     {
         pwm1 = PWM1;
         pwm2 = PWM2;
@@ -72,5 +72,7 @@ class driveMotor
     private:
     int pwm1, dir1, pwm2, dir2, pwm3, dir3, pwm4, dir4;
 };
+
+class 
 
 #endif
