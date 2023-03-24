@@ -11,6 +11,7 @@
 class driveMotors
 {
     public:
+    // Test comment
     driveMotors(int PWM1, int DIR1, int PWM2, int DIR2, int PWM3, int DIR3, int PWM4, int DIR4)
     {
         pwm1 = PWM1;
@@ -100,9 +101,9 @@ class driveMotors
 class arm
 {
   public:
-    arm(int raise, int dir, int step, int ms1, int ms2, int en, int slp)
+    arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
     {
-      raiseServo.attach(raise);
+      raiseServo.attach(pwm);
       _dir = dir;
       _step = step;
       _ms1 = ms1;
@@ -202,7 +203,7 @@ class turntable
 class duckStorage
 {
   public:
-  duckStorage(int solenoid, int dir1, int pwm1, int dir2, int pwm2)
+  duckStorage(int solenoid, int pwm1, int pwm2)
   {
     _solenoid = solenoid;
     _dir1 = dir1;
@@ -212,8 +213,8 @@ class duckStorage
 
     servo1.attach(pwm1);
     servo2.attach(pwm2);
-    digitalWrite(dir1, HIGH); // may need to be swapped but these should always be opposite
-    digitalWrite(dir2, LOW);
+    servo1.write(0);
+    servo2.write(0);
   }
 
   void tilt()
