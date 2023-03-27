@@ -11,7 +11,6 @@
 class driveMotors
 {
     public:
-    // Test comment
     driveMotors(int PWM1, int DIR1, int PWM2, int DIR2, int PWM3, int DIR3, int PWM4, int DIR4)
     {
         pwm1 = PWM1;
@@ -28,7 +27,7 @@ class driveMotors
         digitalWrite(dir3, HIGH);
         digitalWrite(dir4, LOW);
     }
-
+    // speed is 0-255
     void forward(int speed)
     {
         digitalWrite(dir1, HIGH);
@@ -40,7 +39,7 @@ class driveMotors
         analogWrite(pwm1, speed);
         analogWrite(pwm3, speed);
     }
-
+    // Speed is 0-255
     void backward(int speed)
     {
         digitalWrite(dir1, LOW);
@@ -52,7 +51,7 @@ class driveMotors
         analogWrite(pwm1, speed);
         analogWrite(pwm3, speed);
     }
-
+    // speed is 0-255
     void right(int speed)
     {
         digitalWrite(dir2, HIGH);
@@ -64,7 +63,7 @@ class driveMotors
         analogWrite(pwm2, speed);
         analogWrite(pwm4, speed);
     }
-
+    // speed is 0-255
     void left(int speed)
     {
         digitalWrite(dir2, LOW);
@@ -76,14 +75,18 @@ class driveMotors
         analogWrite(pwm2, speed);
         analogWrite(pwm4, speed);
     }
-
+    // dir=0 is left, dir=1 is right. speed is 0-255
     void turn(int dir, int speed) // 0 is left, 1 is right (test)
     {
       // experiment with directions but i think they should all be the same
-      analogWrite(pwm1, dir);
-      analogWrite(pwm2, dir);
-      analogWrite(pwm3, dir);
-      analogWrite(pwm4, dir);
+      digitalWrite(dir1, dir);
+      digitalWrite(dir2, dir);
+      digitalWrite(dir3, dir);
+      digitalWrite(dir4, dir);
+      analogWrite(pwm1, speed);
+      analogWrite(pwm2, speed);
+      analogWrite(pwm3, speed);
+      analogWrite(pwm4, speed);
     }
 
     void stop()
@@ -98,10 +101,10 @@ class driveMotors
     int pwm1, dir1, pwm2, dir2, pwm3, dir3, pwm4, dir4;
 };
 
-class arm
+class Arm
 {
   public:
-    arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
+    Arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
     {
       raiseServo.attach(pwm);
       _dir = dir;
@@ -136,10 +139,10 @@ class arm
   int _slp;
 };
 
-class claw
+class Claw
 {
   public:
-  claw(int PWM)
+  Claw(int PWM)
   {
     myservo.attach(PWM);
   }
@@ -160,10 +163,10 @@ class claw
   const int openDegrees = 180; // subject to change
 };
 
-class turntable
+class Turntable
 {
   public:
-  turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int ms2, int en, int slp)
+  Turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int ms2, int en, int slp)
   {
     _doorDir = doorDir;
     _doorPWM = doorPWM;
@@ -206,9 +209,7 @@ class duckStorage
   duckStorage(int solenoid, int pwm1, int pwm2)
   {
     _solenoid = solenoid;
-    _dir1 = dir1;
     _pwm1 = pwm1;
-    _dir2 = dir2;
     _pwm2 = pwm2;
 
     servo1.attach(pwm1);
@@ -238,7 +239,7 @@ class duckStorage
   private:
   Servo servo1;
   Servo servo2;
-  int _solenoid, _dir1, _pwm1, _dir2, _pwm2;
+  int _solenoid, _pwm1, _pwm2;
   const int tiltDegrees = 30;
 };
 
