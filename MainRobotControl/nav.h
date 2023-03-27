@@ -18,10 +18,17 @@ class navigation
     pos[2] = y;
   }
 
+  void moveToWaypoint(int w)
+  {
+    // do stuff
+  }
+
   private:
   int pos[2];
   int targetPos[2];
   int recyclingPos[2];
+  const int waypoints[5][2] = {{0,0}, {0,0}, {0,0}, {0,0}, {0,0}}; // update
+  int lastWaypoint = 0;
 };
 
 //#endif
