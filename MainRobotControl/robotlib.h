@@ -8,6 +8,9 @@
 #ifndef SERVO_H
 #define SERVO_H
 
+#ifndef PIXY2_H
+#define PIXY2_H
+
 class driveMotors
 {
     public:
@@ -360,6 +363,103 @@ class duckStorage
   Servo servo2;
   int _solenoid, _pwm1, _pwm2;
   const int tiltDegrees = 30;
+};
+
+class navigation
+{
+  public:
+  navigation()
+  {
+    pos[0] = 0;
+    pos[1] = 0;
+  }
+
+  void updatePos(int x, int y)
+  {
+    pos[1] = x;
+    pos[2] = y;
+  }
+
+  void moveToWaypoint(int w)
+  {
+    // do stuff
+  }
+
+  private:
+  int pos[2];
+  int targetPos[2];
+  int recyclingPos[2];
+  const int waypoints[5][2] = {{0,0}, {0,0}, {0,0}, {0,0}, {0,0}}; // update
+  int lastWaypoint = 0;
+  // Degrees. 0 is "up", 90 is right
+  int heading = 0;
+};
+
+class smartPixy
+{
+  public:
+  smartPixy()
+  {
+    pixy.init();
+    pixy.changeProg("color_connected_components");
+  }
+
+  // Take the biggest block (blocks[0]) that's been around for at least 30 frames (1/2 second)
+  // and return its index, otherwise return -1
+  int16_t acquireBlock()
+  {
+    if (pixy.ccc.numBlocks && pixy.ccc.blocks[0].m_age>30)
+      return pixy.ccc.blocks[0].m_index;
+
+    return -1;
+  }
+
+  // Find the block with the given index.  In other words, find the same object in the current
+  // frame -- not the biggest object, but he object we've locked onto in acquireBlock()
+  // If it's not in the current frame, return NULL
+  Block *trackBlock(uint8_t index)
+  {
+    uint8_t i;
+
+    for (i=0; i<pixy.ccc.numBlocks; i++)
+    {
+      if (index==pixy.ccc.blocks[i].m_index)
+        return &pixy.ccc.blocks[i];
+    }
+
+    return NULL;
+  }
+
+  /* PIXY CAM STUFF -----------------------------------------------------
+  static int16_t blockIndex = -1;
+  Block *block=NULL;
+  pixy.ccc.getBlocks();
+  if (blockIndex==-1) // search....
+  {
+    Serial.println("Searching for block...");
+    blockIndex = acquireBlock();
+    if (blockIndex>=0)
+      Serial.println("Found block!");
+  }
+  // If we've found a block, find it, track it
+  if (blockIndex>=0)
+     block = trackBlock(blockIndex);
+
+  // If we're able to track it, do stuff
+  if (block)
+  {
+	  Serial.println("Tracking block!");
+    block->print();
+  }
+  else // no object detected, go into search state
+  {
+	  Serial.println("No objects detected");
+    index = -1; // set search state
+  }
+  // END PIXY CAM STUFF --------------------------------------------------*/
+
+  private:
+  Pixy2 pixy;
 };
 
 #endif
