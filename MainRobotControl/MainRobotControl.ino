@@ -4,7 +4,7 @@
 #include "Adafruit_VL53L0X.h"
 
 // Object declaration
-ControlState s = startup;
+ControlState s = foodChipDropoff;
 navigation nav = navigation();
 driveMotors drive = driveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
 Arm arm = Arm(PWM6, STEP_DIR1, STEP1, MS1_1, MS2_1, EN1, SLP1);
@@ -68,13 +68,13 @@ void setup() {
   // initial position reading
   readDistance();
   Serial.print("Sensor 1: ");
-  Serial.println(measure1.RangeMillimeter);
+  Serial.println(measure1.RangeMilliMeter);
   Serial.print("Sensor 2: ");
-  Serial.println(measure3.RangeMillimeter);
+  Serial.println(measure2.RangeMilliMeter);
   Serial.print("Sensor 3: ");
-  Serial.println(measure3.RangeMillimeter);
+  Serial.println(measure3.RangeMilliMeter);
   Serial.print("Sensor 4: ");
-  Serial.println(measure4.RangeMillimeter);
+  Serial.println(measure4.RangeMilliMeter);
 
   // Activate dummy bot
 
@@ -87,16 +87,16 @@ void loop() {
   {
     case foodChipDropoff:
       // Go to square one
-      drive.left();
-      while(measure4.RangeMillimeter > 100) readDistance();
+      drive.left(driveSpeed);
+      while(measure4.RangeMilliMeter > 100) readDistance();
       drive.stop();
       // Drop first batch of chips
       turntable.goToStackPos(1.0);
       turntable.openDoor();
       turntable.closeDoor();
       // Go to square two
-      drive.forward();
-      while(measure1.RangeMillimeter > 100) readDistance();
+      drive.forward(driveSpeed);
+      while(measure1.RangeMilliMeter > 100) readDistance();
       drive.stop();
       // Drop second batch of chips
       turntable.goToStackPos(2.0);

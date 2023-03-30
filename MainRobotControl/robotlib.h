@@ -5,11 +5,15 @@
 #ifndef ARDUINO_H
 #define ARDUINO_H
 
+
 #ifndef SERVO_H
 #define SERVO_H
 
 #ifndef PIXY2_H
 #define PIXY2_H
+
+#include <Servo.h>
+#include <Pixy2.h>
 
 class driveMotors
 {
@@ -126,6 +130,7 @@ class Arm
     pinMode(_slp, OUTPUT);
     pinMode(pwm, OUTPUT);
 
+    //Servo raiseServo;
     raiseServo.attach(pwm);
     _dir = dir;
     _step = step;
@@ -182,8 +187,8 @@ class Arm
   }
 
   private:
-  Servo raiseServo;
   int _dir, _step, _ms1, _ms2, _en, _slp;
+  Servo raiseServo;
 };
 
 class Claw
@@ -192,7 +197,8 @@ class Claw
   Claw(int PWM)
   {
     pinMode(PWM, OUTPUT);
-    myservo.attach(PWM);
+    myServo.attach(PWM);
+    //Servo myservo;
   }
 
   void openClaw()
@@ -208,13 +214,13 @@ class Claw
   {
     for(int i=openDegrees; i>closedDegrees; i--)
     {
-      raiseServo.write(i);
+      myServo.write(i);
       delay(0.1);
     }
   }
 
   private:
-  Servo myservo;
+  Servo myServo;
   const int closedDegrees = 0; // subject to change
   const int openDegrees = 180; // subject to change
 };
@@ -400,6 +406,7 @@ class smartPixy
   public:
   smartPixy()
   {
+    //Pixy2 pixy;
     pixy.init();
     pixy.changeProg("color_connected_components");
   }
@@ -462,4 +469,6 @@ class smartPixy
   Pixy2 pixy;
 };
 
+#endif
+#endif
 #endif
