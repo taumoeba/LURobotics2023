@@ -34,7 +34,7 @@ drop matching chips
 // Begin sweeping pattern
 while(elapsedTime <= endSweepTime)
 {
-	move(pathFollowDistance);
+	moveToWaypoint
 	look for objects
 	if object found:
 		identify object

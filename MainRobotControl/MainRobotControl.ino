@@ -6,7 +6,7 @@
 // Object declaration
 ControlState s = foodChipDropoff;
 navigation nav = navigation();
-driveMotors drive = driveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
+//driveMotors drive = driveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
 Arm arm = Arm(PWM6, STEP_DIR1, STEP1, MS1_1, MS2_1, EN1, SLP1);
 Claw claw = Claw(PWM7);
 Turntable turntable = Turntable(DC_DIR5, DC_PWM5, STEP_DIR2, STEP2, MS1_2, MS2_2, EN2, SLP2);
@@ -81,23 +81,25 @@ void setup() {
 
 }
 
+
+
 void loop() {
   // execute operations according to control state
   switch(s)
   {
     case foodChipDropoff:
       // Go to square one
-      drive.left(driveSpeed);
+      //drive.left(driveSpeed);
       while(measure4.RangeMilliMeter > 100) readDistance();
-      drive.stop();
+      //drive.stop();
       // Drop first batch of chips
       turntable.goToStackPos(1.0);
       turntable.openDoor();
       turntable.closeDoor();
       // Go to square two
-      drive.forward(driveSpeed);
+      //drive.forward(driveSpeed);
       while(measure1.RangeMilliMeter > 100) readDistance();
-      drive.stop();
+      //drive.stop();
       // Drop second batch of chips
       turntable.goToStackPos(2.0);
       turntable.openDoor();
