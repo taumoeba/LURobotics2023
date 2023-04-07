@@ -1,6 +1,10 @@
 /* Motor control library for 2023 Lipscomb Robotics
 */
 
+#include <Servo.h>
+#include <Pixy2.h>
+#include "consts.h"
+#include "pins.h"
 // driveMotors isn't called by MainRobotControl directly
 // it's used by navigation, which is called by MainRobotControl
 class DriveMotors
@@ -88,6 +92,7 @@ class Navigation
   public:
   Navigation();
   void updatePos(int x, int y);
+  void rotateToHeading(int h);
   void moveToWaypoint(int w);
 
   private:
@@ -99,7 +104,7 @@ class Navigation
   int lastWaypoint = 0;
   // Degrees. 0 is "up", 90 is right
   int heading = 0;
-  driveMotors drive = driveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
+  DriveMotors drive = DriveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
 };
 
 class SmartPixy
@@ -114,38 +119,8 @@ class SmartPixy
   // If it's not in the current frame, return NULL
   Block *trackBlock(uint8_t index);
 
-  /* PIXY CAM STUFF -----------------------------------------------------
-  static int16_t blockIndex = -1;
-  Block *block=NULL;
-  pixy.ccc.getBlocks();
-  if (blockIndex==-1) // search....
-  {
-    Serial.println("Searching for block...");
-    blockIndex = acquireBlock();
-    if (blockIndex>=0)
-      Serial.println("Found block!");
-  }
-  // If we've found a block, find it, track it
-  if (blockIndex>=0)
-     block = trackBlock(blockIndex);
-
-  // If we're able to track it, do stuff
-  if (block)
-  {
-	  Serial.println("Tracking block!");
-    block->print();
-  }
-  else // no object detected, go into search state
-  {
-	  Serial.println("No objects detected");
-    index = -1; // set search state
-  }
-  // END PIXY CAM STUFF --------------------------------------------------*/
+  Block* findBlock();
 
   private:
   Pixy2 pixy;
 };
-
-#endif
-#endif
-#endif

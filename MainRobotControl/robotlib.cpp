@@ -5,20 +5,15 @@
 #ifndef ARDUINO_H
 #define ARDUINO_H
 
-
-#ifndef SERVO_H
-#define SERVO_H
-
 #ifndef PIXY2_H
 #define PIXY2_H
 
-#include <Servo.h>
-#include <Pixy2.h>
+#include "robotlib.h"
 
 /*******************************
  * DriveMotors
+ * supposedly done
 ********************************/
-
 // DriveMotors isn't called by MainRobotControl directly
 // it's used by Navigation, which is called by MainRobotControl
 DriveMotors::DriveMotors(int PWM1, int DIR1, int PWM2, int DIR2, int PWM3, int DIR3, int PWM4, int DIR4)
@@ -119,6 +114,7 @@ void DriveMotors::stop()
 
 /************************************
  * Arm
+ * supposedly done
 *************************************/
 Arm::Arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
 {
@@ -149,7 +145,7 @@ Arm::Arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
 	// starts up in sleep mode
 }
 
-void Arm::aise(int degrees)
+void Arm::raise(int degrees)
 {
 	for(int i=0; i<degrees; i++)
 	{
@@ -189,6 +185,7 @@ void Arm::wake()
 
 /*********************************
  * Claw
+ * supposedly done
 **********************************/
 Claw::Claw(int PWM)
 {
@@ -218,6 +215,7 @@ void Claw::closeClaw()
 
 /*************************************
  * Turntable
+ * Supposedly done
 ***************************************/
 Turntable::Turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int ms2, int en, int slp)
 {
@@ -314,6 +312,7 @@ void Turntable::wake()
 
 /*****************************************
  * DuckStorage
+ * supposedly done
 ******************************************/
 DuckStorage::DuckStorage(int solenoid, int pwm1, int pwm2)
 {
@@ -352,6 +351,7 @@ void DuckStorage::release()
 
 /***********************************
  * Navigation
+ * not done
 ************************************/
 Navigation::Navigation()
 {
@@ -372,9 +372,16 @@ void Navigation::moveToWaypoint(int w)
 	// stop
 }
 
+void Navigation::rotateToHeading(int h)
+{
+	// check current heading
+	// rotate if necessary
+}
+
 
 /***************************************
  * SmartPixy
+ * not done
 ****************************************/
 SmartPixy::SmartPixy()
 {
@@ -409,6 +416,31 @@ Block* SmartPixy::trackBlock(uint8_t index)
 	return NULL;
 }
 
+Block* SmartPixy::findBlock()
+{
+	static int16_t index = -1;
+	Block *block=NULL;
+
+	Serial.println("Place Duck directly in front of pixy cam, 6 inches away");
+	for(int i=10; i>0; i--) Serial.println("i");
+	while(!block || block->m_age < 100)
+	{
+		pixy.ccc.getBlocks();
+		if (index==-1) // search....
+		{
+			Serial.println("Searching for block...");
+			index = acquireBlock();
+			if (index>=0)
+				Serial.println("Found block!");
+		}
+		// If we've found a block, find it, track it
+		if (index>=0) block = trackBlock(index);
+
+		// If we're able to track it, move motors
+		if (block) return block;
+	}
+}
+
 /* PIXY CAM STUFF -----------------------------------------------------
 static int16_t blockIndex = -1;
 Block *block=NULL;
@@ -437,6 +469,5 @@ index = -1; // set search state
 }
 // END PIXY CAM STUFF --------------------------------------------------*/
 
-#endif
 #endif
 #endif

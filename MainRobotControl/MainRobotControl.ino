@@ -1,16 +1,15 @@
 #include "robotlib.h"
-#include "pins.h"
-#include "consts.h"
 #include "Adafruit_VL53L0X.h"
 
 // Object declaration
 ControlState s = foodChipDropoff;
-navigation nav = navigation();
+Navigation nav = Navigation();
 //driveMotors drive = driveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
 Arm arm = Arm(PWM6, STEP_DIR1, STEP1, MS1_1, MS2_1, EN1, SLP1);
 Claw claw = Claw(PWM7);
 Turntable turntable = Turntable(DC_DIR5, DC_PWM5, STEP_DIR2, STEP2, MS1_2, MS2_2, EN2, SLP2);
-duckStorage ducks = duckStorage(SOL, PWM8, PWM9);
+DuckStorage ducks = DuckStorage(SOL, PWM8, PWM9);
+Block block;
 
 Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
 Adafruit_VL53L0X lox2 = Adafruit_VL53L0X();
@@ -20,6 +19,9 @@ VL53L0X_RangingMeasurementData_t measure1;
 VL53L0X_RangingMeasurementData_t measure2;
 VL53L0X_RangingMeasurementData_t measure3;
 VL53L0X_RangingMeasurementData_t measure4;
+
+// global variables
+int currentWaypoint = 0;
 
 void readDistance()
 {
@@ -88,6 +90,7 @@ void loop() {
   switch(s)
   {
     case foodChipDropoff:
+    {
       // Go to square one
       //drive.left(driveSpeed);
       while(measure4.RangeMilliMeter > 100) readDistance();
@@ -107,18 +110,55 @@ void loop() {
       // Switch to next state
       s = searching;
       break;
+    }
     case searching:
+    {
+      nav.moveToWaypoint(currentWaypoint);
+      currentWaypoint++;
+	  int sig = block.m_signature;
+      s = intercepting;
       break;
+    }
     case intercepting:
-      break;
+    {
+        Serial.print("A");
+        s = grabbing;
+        break;
+    }
     case grabbing:
-      break;
+    {
+        Serial.print("A");
+        s = sorting;
+        break;
+    }
     case sorting:
-      break;
+    {
+        Serial.print("A");
+        s = dropping;
+        break;
+    }
     case dropping:
-      break;
+    {
+        Serial.print("A");
+        s = recycling;
+        break;
+    }
     case recycling:
+    {
+      // recycling is waypoint 99
+      nav.moveToWaypoint(99);
+      nav.rotateToHeading(180);
+      ducks.release();
+      while(true)
+      {
+        // end game
+        delay(1000);
+      }
+      s = dropping;
       break;
+    }
+    default:
+    break;
   }
   
 }
