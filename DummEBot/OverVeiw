@@ -27,10 +27,11 @@
 // Variables
   //Motors
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *leftMotor = AFMS.getMotor(3);
-Adafruit_DCMotor *rightMotor = AFMS.getMotor(4);
-int leftSpeed = 150;
-int rightSpeed =150;
+Adafruit_DCMotor *leftMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *rightMotor = AFMS.getMotor(3);
+int leftSpeed = 0;
+int rightSpeed =0;
+uint8_t botSpeed = 0;
 
 // Timing increments 
   int msec = 0, trigger = 10; // 10 second intervals for activations 
@@ -39,38 +40,52 @@ int rightSpeed =150;
 
   //Servo
 Servo lightSwitchArm; //lightSwitchArm
-int lightSwitchArmPOS = 0;
+int lightSwitchArmPOS = -25;
+
+//Sensors 
+  #define leftSensor A1
+  #define rightSensor A3
 
 
 // Functions
   //Mottor
   void Forward()
   {
+    uint8_t i;
+    rightMotor->run(FORWARD);
+    leftMotor->run(FORWARD);
+    
+      leftMotor->setSpeed(255);
+      rightMotor->setSpeed(255-33);
+     
+    delay(500);
+      rightMotor->setSpeed(0);
+      leftMotor->setSpeed(0);
 
+    rightMotor->run(RELEASE);
+    leftMotor->run(RELEASE);
   }
 
   //Servo
- void ArmOnOff()
+ void ArmDown()
  {
- // if (lightSwitchArmPOS = 0 )
-  //{
-    while (lightSwitchArmPOS <= 180) 
-    { // goes from 0 degrees to 180 degrees
+
+      while (lightSwitchArmPOS <= 70) { // goes from 0 degrees to 180 degrees
       // in steps of 1 degree
-      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                   
-      lightSwitchArmPOS += 1;
-      delay(15);
-    }
- /* } else {
-   while (lightSwitchArmPOS >= 0) 
-    { // goes from 0 degrees to 180 degrees
-      // in steps of 1 degree
-      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                   
-      lightSwitchArmPOS -= 1;
-      delay(15);
-    }
-  }*/
+      lightSwitchArm.write(lightSwitchArmPOS);  
+      lightSwitchArmPOS += 1   ;         // tell servo to go to position in variable 'pos'
+      delay(15);                       // waits 15 ms for the servo to reach the position
+      }
  }
+void ArmUp()
+  {
+      while (lightSwitchArmPOS >= -25) { // goes from 180 degrees to 0 degrees
+        lightSwitchArm.write(lightSwitchArmPOS);  
+        lightSwitchArmPOS -= 1     ;       // tell servo to go to position in variable 'pos'
+        delay(15);                       // waits 15 ms for the servo to reach the position
+      }
+  }
+ 
    
 
 
@@ -78,48 +93,25 @@ void setup() {
   //Testing Code only
   Serial.begin(9600);
 
-  if (!AFMS.begin()) {         // create with the default frequency 1.6KHz
-    Serial.println("Could not find Motor Shield. Check wiring.");
-    while (1);
-  }
-  Serial.println("Motor Shield found.");
+  // Keep This code in main version
 
-
-
-
-  // Keep This code in main
+ 
 
   AFMS.begin();
 
-  leftMotor->setSpeed(leftSpeed);
-  rightMotor->setSpeed(rightSpeed);
+  leftMotor->setSpeed(0);
+  rightMotor->setSpeed(0);
 
-  leftMotor->run(FORWARD);
-  rightMotor->run(FORWARD);
-  
-  rightMotor->run(RELEASE);
-  leftMotor->run(RELEASE);
 
-  lightSwitchArm.attach(4);
+  lightSwitchArm.attach(6);
+  ArmDown();
 }
 
-void loop() {
+void loop() 
+{
+  int leftState = analogRead(leftSensor);
+  int rightState = analogRead(rightSensor);
 
-      while (lightSwitchArmPOS <= 180) 
-    { // goes from 0 degrees to 180 degrees
-      // in steps of 1 degree
-      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                   
-      lightSwitchArmPOS += 1;
-      delay(15);
-    }
-   while (lightSwitchArmPOS >= 0) 
-    { // goes from 0 degrees to 180 degrees
-      // in steps of 1 degree
-      lightSwitchArm.write(lightSwitchArmPOS);              // tell servo to go to position in variable 'pos'                   
-      lightSwitchArmPOS -= 1;
-      delay(15);
-    } 
+  Forward();
 
-      delay(100);
-    
 }
