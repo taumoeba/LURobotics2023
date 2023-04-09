@@ -114,7 +114,7 @@ void DriveMotors::stop()
 
 /************************************
  * Arm
- * supposedly done
+ * maybe done
 *************************************/
 Arm::Arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
 {
@@ -143,33 +143,49 @@ Arm::Arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
 	digitalWrite(_slp, LOW);
 	digitalWrite(_step, LOW);
 	// starts up in sleep mode
+
+	currRot = 0; // REPLACE WITH STARTING ROTATION DEGREES
+	currRaise = 0; // REPLACE WITH STARTING RAISE DEGREES
 }
 
-void Arm::raise(int degrees)
+void Arm::raise(int pos)
 {
-	for(int i=0; i<degrees; i++)
+	if(raiseDegrees[pos] > currRaise)
 	{
-		raiseServo.write(degrees);
-		delay(0.1);
+		for(int i=currRaise; i<raiseDegrees[pos]; i++)
+		{
+			raiseServo.write(i);
+			delay(0.1); // TEST DELAY
+		}
+	} else if(raiseDegrees[pos] < currRaise)
+	{
+		for(int i=currRaise; i>raiseDegrees[pos]; i--)
+		{
+			raiseServo.write(i);
+			delay(0.1); // TEST DELAY
+		}
 	}
+	currRaise = raiseDegrees[pos];
 }
 
 // negative degrees to go counterclockwise
-void Arm::rotate(int degrees)
+void Arm::rotate(int pos)
 {
 	// optional microstepping
 	// digitalWrite(MS1, HIGH); //Pull MS1, and MS2 high to set logic to 1/8th microstep resolution
 	// digitalWrite(MS2, HIGH);
-	if(degrees<0) digitalWrite(_dir, HIGH);
+	if(degrees<0) digitalWrite(_dir, HIGH); // TEST DIRECTIONS
 	else digitalWrite(_dir, LOW);
-	int steps = (abs(degrees)/360)*200;
+
+	int steps = (abs(rotateDegrees[pos])/360)*200;
 	for(int i=0; i<steps; i++)
 	{
 		digitalWrite(_step, HIGH);
-		delay(0.1);
+		delay(0.1); // TEST DELAY
 		digitalWrite(_step, LOW);
 		delay(0.1);
 	}
+	currRot = rotateDegrees[pos];
 }
 
 void Arm::sleep()
@@ -215,7 +231,7 @@ void Claw::closeClaw()
 
 /*************************************
  * Turntable
- * Supposedly done
+ * not done
 ***************************************/
 Turntable::Turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int ms2, int en, int slp)
 {
@@ -248,22 +264,88 @@ Turntable::Turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int m
 	// starts up in sleep mode
 }
 
+// Go to stack best suited for containing currently-held pedestal
 // Stacks are 0, 1, and 2. 0.5, 1.5, and 2.5 are halfway between each stack.
-void Turntable::goToStackPos(float dest)
+// correct pedestal order (bottom to top): white, green, red
+int Turntable::goToOptimalStack(int color)
 {
+	// deciding stack
+	// colors: 1=red, 2=green, 3=white
+	float dest = 10.0; // 10 means stack not found
+	if(color==3) // white
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(stacks[i][0]==0) // bottom is empty
+			{
+				dest=i;
+				stacks[i][0]=color;
+				break;
+			}
+		}
+	} else if(color==2) // green
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(stacks[i][0]==3 && stacks[i][1]==0) // bottom is white & middle is empty
+			{
+				dest=i;
+				stacks[i][1]=color;
+				break;
+			}
+		}
+	} else if(color==1) // red
+	{
+		for(int i=0; i<3; i++)
+		{
+			if(stacks[i][1]==2 && stacks[i][2]==0) // middle is green & top is empty
+			{
+				dest=i;
+				stacks[i][2]=color;
+				break;
+			}
+		}
+	}
+
+	if(dest==10.0) // optimal stack was not found
+	{
+		// just look for a stack with an empty spot
+		for(int i=0; i<3; i++)
+		{
+			for(int j=0; j<3; j++)
+			{
+				if(stacks[i][j]==0) // if empty spot exists
+				{
+					dest=i;
+					stacks[i][j]=color;
+					break;
+				}
+			}
+		}
+		if(dest==10.0) return -1; // no empty spots exist, return error code
+	}
+
+	goToStack(dest);
+	return 0;
+}
+
+void Turntable::goToStack(float dest)
+{
+	// moving to stack
+	// TEST
 	if(currentStack-dest>0) 
 	{
 		digitalWrite(_dir, HIGH); // go clockwise
 		while(currentStack!=dest)
 		{
-		for(int i=0; i<stepChunk; i++)
-		{
-			digitalWrite(_step, HIGH);
-			delay(0.1);
-			digitalWrite(_step, LOW);
-			delay(0.1);
-		}
-		currentStack -= 0.5;
+			for(int i=0; i<stepChunk; i++)
+			{
+				digitalWrite(_step, HIGH);
+				delay(0.1);
+				digitalWrite(_step, LOW);
+				delay(0.1);
+			}
+			currentStack -= 0.5;
 		}
 	}
 	else 
@@ -271,16 +353,40 @@ void Turntable::goToStackPos(float dest)
 		digitalWrite(_dir, LOW); // go counter-clockwise
 		while(currentStack!=dest)
 		{
-		for(int i=0; i<stepChunk; i++)
-		{
-			digitalWrite(_step, HIGH);
-			delay(0.1);
-			digitalWrite(_step, LOW);
-			delay(0.1);
-		}
-		currentStack += 0.5;
+			for(int i=0; i<stepChunk; i++)
+			{
+				digitalWrite(_step, HIGH);
+				delay(0.1);
+				digitalWrite(_step, LOW);
+				delay(0.1);
+			}
+			currentStack += 0.5;
 		}
 	}
+}
+
+float Turntable::findFullStack()
+{
+	float stack = -1.0;
+	for(int i=0; i<2; i++)
+	{
+		if(stacks[i][2]!=0) // top spot of stack is full
+		{
+			stack = i;
+		}
+	}
+	return stack;
+}
+
+void Turntable::emptyFullStack(float stack)
+{
+	goToStack(stack);
+	openDoor();
+	delay(1); // TEST
+	closeDoor();
+	stacks[(int)stack][0]=0;
+	stacks[(int)stack][1]=0;
+	stacks[(int)stack][2]=0;
 }
 
 void Turntable::openDoor()
@@ -368,7 +474,7 @@ void Navigation::updatePos(int x, int y)
 void Navigation::moveToWaypoint(int w)
 {
 	// check orientation w/ respect to waypoint, rotate if needed
-	// drive to waypoint
+	// drive to waypoint (driveChunkTime)
 	// stop
 }
 
@@ -416,7 +522,7 @@ Block* SmartPixy::trackBlock(uint8_t index)
 	return NULL;
 }
 
-Block* SmartPixy::findBlock()
+int SmartPixy::returnBlockInfo(int x)
 {
 	static int16_t index = -1;
 	Block *block=NULL;
@@ -437,7 +543,16 @@ Block* SmartPixy::findBlock()
 		if (index>=0) block = trackBlock(index);
 
 		// If we're able to track it, move motors
-		if (block) return block;
+		if (block) 
+		{
+			// colors: 1=red, 2=green, 3=white, 4=yellow
+			if(x==0) return block->m_signature;
+			else if(x==1) return block->m_x;
+			else if(x==2) return block->m_y;
+			else if(x==3) return block->m_width;
+			else if(x==4) return block->m_height;
+			else return -1;
+		}
 	}
 }
 
