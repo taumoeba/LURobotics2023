@@ -382,7 +382,7 @@ void Turntable::emptyFullStack(float stack)
 {
 	goToStack(stack);
 	openDoor();
-	delay(1); // TEST
+	delay(1000); // TEST
 	closeDoor();
 	stacks[(int)stack][0]=0;
 	stacks[(int)stack][1]=0;
@@ -393,7 +393,7 @@ void Turntable::openDoor()
 {
 	digitalWrite(_doorDir, HIGH); // test direction
 	analogWrite(_doorPWM, 127); // test speed
-	delay(1); // test duration
+	delay(1000); // test duration
 	analogWrite(_doorPWM, 0);
 }
 
@@ -401,7 +401,7 @@ void Turntable::closeDoor()
 {
 	digitalWrite(_doorDir, LOW); // test direction
 	analogWrite(_doorPWM, 127); // test speed
-	delay(1); // test duration
+	delay(1000); // test duration
 	analogWrite(_doorPWM, 0);
 }
 

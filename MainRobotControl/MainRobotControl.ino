@@ -98,20 +98,20 @@ void loop()
 		case foodChipDropoff:
 		{
 			// Go to square one
-			//drive.left(driveSpeed);
-			while(measure4.RangeMilliMeter > 100) readDistance();
-			//drive.stop();
+			currentWaypoint++;
+			nav.moveToWaypoint(currentWaypoint);
 			// Drop first batch of chips
-			turntable.goToStackPos(1.0);
+			turntable.goToStack(1.0);
 			turntable.openDoor();
+			delay(1000); // TEST
 			turntable.closeDoor();
 			// Go to square two
-			//drive.forward(driveSpeed);
-			while(measure1.RangeMilliMeter > 100) readDistance();
-			//drive.stop();
+			currentWaypoint++;
+			nav.moveToWaypoint(currentWaypoint);
 			// Drop second batch of chips
 			turntable.goToStackPos(2.0);
 			turntable.openDoor();
+			delay(1000); // TEST
 			turntable.closeDoor();
 			// Switch to next state
 			s = searching;
@@ -120,7 +120,7 @@ void loop()
 		case searching:
 		{
 			float fullStack==turntable.findFullStack();
-			if(emptyStack!=-1.0) // full stack was found
+			if(fullStack!=-1.0) // full stack was found
 			{
 				nav.moveToWaypoint(currentWaypoint-1); // drive to previous waypoint
 				// rotate for optimal stack dropping
@@ -137,7 +137,7 @@ void loop()
 		}
 		case intercepting:
 		{
-			if(abs(blockInfo[2]-127)>(clawCenterWindow+armOffset))
+			if(abs(blockInfo[2]-158)>(clawCenterWindow+armOffset))
 			{
 				// move to center claw on object
 			}
@@ -162,12 +162,16 @@ void loop()
 					arm.raise(3);
 					arm.rotate(2);
 					claw.openClaw();
+					delay(500);
+					claw.closeClaw();
 				}
 				else // turntable is full, throw in duck storage (should never happen)
 				{
 					arm.raise(3);
 					arm.rotate(1);
 					claw.openClaw();
+					delay(500);
+					claw.closeClaw();
 				}
 			}
 			s = searching;
@@ -178,6 +182,7 @@ void loop()
 			// recycling is waypoint 99
 			nav.moveToWaypoint(99);
 			nav.rotateToHeading(180);
+			ducks.tilt();
 			ducks.release();
 			while(true)
 			{

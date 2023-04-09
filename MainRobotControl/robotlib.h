@@ -68,6 +68,9 @@ class Turntable
 	void goToOptimalStack(int color);
 	float findFullStack();
 	void emptyFullStack(float stack);
+	void goToStack(float dest);
+	void openDoor();
+	void closeDoor();
 
 	private:
 	int _doorDir, _doorPWM, _dir, _step, _ms1, _ms2, _en, _slp;
@@ -76,45 +79,42 @@ class Turntable
 	float currentStack = 0.0;
 	// 0=empty, 1=red, 2=green, 3=white, 4=yellow
 	int[3][3] stacks = {{0,0,0},{0,0,0},{0,0,0}};
-	void goToStack(float dest);
-	void openDoor();
-	void closeDoor();
 	void sleep();
 	void wake();
 };
 
 class DuckStorage
 {
-  public:
-  DuckStorage(int solenoid, int pwm1, int pwm2);
-  void tilt();
-  void release();
+	public:
+	DuckStorage(int solenoid, int pwm1, int pwm2);
+	void tilt();
+	void release();
 
-  private:
-  Servo servo1;
-  Servo servo2;
-  int _solenoid, _pwm1, _pwm2;
-  const int tiltDegrees = 30;
+	private:
+	Servo servo1;
+	Servo servo2;
+	int _solenoid, _pwm1, _pwm2;
+	const int tiltDegrees = 30;
 };
 
 class Navigation
 {
-  public:
-  Navigation();
-  void updatePos(int x, int y);
-  void rotateToHeading(int h);
-  void moveToWaypoint(int w);
+	public:
+	Navigation();
+	void rotateToHeading(int h);
+	void moveToWaypoint(int w);
 
-  private:
-  int pos[2];
-  int targetPos[2];
-  int recyclingPos[2];
-  int maxPos[2] = {};
-  const int waypoints[5][2] = {{0,0}, {0,0}, {0,0}, {0,0}, {0,0}}; // update
-  int lastWaypoint = 0;
-  // Degrees. 0 is "up", 90 is right
-  int heading = 0;
-  DriveMotors drive = DriveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
+	private:
+	int pos[2];
+	int targetPos[2];
+	int recyclingPos[2];
+	int maxPos[2] = {};
+	const int waypoints[5][2] = {{0,0}, {0,0}, {0,0}, {0,0}, {0,0}}; // update
+	int lastWaypoint = 0;
+	// Degrees. 0 is "up", 90 is right
+	int heading = 0;
+	DriveMotors drive = DriveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
+	void updatePos(int x, int y);
 };
 
 class SmartPixy
