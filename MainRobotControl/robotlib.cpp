@@ -484,6 +484,14 @@ void Navigation::rotateToHeading(int h)
 	// rotate if necessary
 }
 
+void Navigation::readDistance()
+{
+	lox1.rangingTest(&measure1, false); 
+	lox2.rangingTest(&measure2, false);
+	lox3.rangingTest(&measure3, false);
+	lox4.rangingTest(&measure4, false);
+}
+
 
 /***************************************
  * SmartPixy

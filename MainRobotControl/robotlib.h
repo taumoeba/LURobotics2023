@@ -3,6 +3,7 @@
 
 #include <Servo.h>
 #include <Pixy2.h>
+#include "Adafruit_VL53L0X.h"
 #include "consts.h"
 #include "pins.h"
 // driveMotors isn't called by MainRobotControl directly
@@ -113,7 +114,18 @@ class Navigation
 	int lastWaypoint = 0;
 	// Degrees. 0 is "up", 90 is right
 	int heading = 0;
+
 	DriveMotors drive = DriveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
+	Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
+	Adafruit_VL53L0X lox2 = Adafruit_VL53L0X();
+	Adafruit_VL53L0X lox3 = Adafruit_VL53L0X();
+	Adafruit_VL53L0X lox4 = Adafruit_VL53L0X();
+	VL53L0X_RangingMeasurementData_t measure1;
+	VL53L0X_RangingMeasurementData_t measure2;
+	VL53L0X_RangingMeasurementData_t measure3;
+	VL53L0X_RangingMeasurementData_t measure4;
+
+	void readDistance();
 	void updatePos(int x, int y);
 };
 

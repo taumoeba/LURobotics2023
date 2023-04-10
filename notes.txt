@@ -1,0 +1,27 @@
+Field size (inside the walls, according to build document): 
+91.625" x 46.625"
+2327.275 x 1184.275 mm
+
+Robot size:
+12" x 12"
+304.8 x 304.8 mm
+
+VL53L0X range: 30 to 1000 mm (~1 to ~39 in)
+3% to 12% error depending on range -- assume worst case of 12%
+304 mm between distance sensors
+152 mm from center of robot for each distance sensor
+
+For nav system, top left of board is (0,0). Bottom right is (2327,1184)
+coordinates are in mm
+
+ducks and pedestals can be in area from (254,0) to (1794,880)
+1,355,200 mm^2
+each waypoint is ~304 mm (one robot length) apart
+
+IMPORTANT LOCATIONS (top left), (bottom right)
+food storage 1 (bottom left): (0,880), (229,1184)
+food storage 2 (top left): (0,0), (229,304)
+start square: (1067, 880), (1372,1184)
+recycling 1 (bottom right): (1794,955), (2327,1184)
+recycling 2 (top right): (1794,0), (2327,229)
+light switch: (2327,559), (2327,660)
