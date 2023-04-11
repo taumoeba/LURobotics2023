@@ -14,14 +14,50 @@ VL53L0X range: 30 to 1000 mm (~1 to ~39 in)
 For nav system, top left of board is (0,0). Bottom right is (2327,1184)
 coordinates are in mm
 
-ducks and pedestals can be in area from (254,0) to (1794,880)
+stay 4mm off side walls
+must be 1/2 a robot width (150mm) away from wall to spin in place
+
+ducks and pedestals can be in area from (254,0) to (2327,880)
 1,355,200 mm^2
 each waypoint is ~304 mm (one robot length) apart
 
 IMPORTANT LOCATIONS (top left), (bottom right)
 food storage 1 (bottom left): (0,880), (229,1184)
+    middle: (115,1032)
 food storage 2 (top left): (0,0), (229,304)
+    middle: (115,152)
 start square: (1067, 880), (1372,1184)
+    middle: (1220,1032)
 recycling 1 (bottom right): (1794,955), (2327,1184)
+    middle: (2061,1070)
 recycling 2 (top right): (1794,0), (2327,229)
+    middle: (2061,115)
 light switch: (2327,559), (2327,660)
+    middle: (2327,610)
+
+
+WAYPOINTS
+start square {1220,1032,0}
+food storage 1 {200,1032,0}
+(check color of other food storage)
+food storage 2
+(drop first chips)
+food storage 1
+(drop second chips)
+move to first searching waypoint
+searching:
+    left to right, move forward after each row
+recycling
+
+
+TODO
+figure out starting arm rotation/raise angles
+finalize waypoints
+pixy recognition code and testing
+moving to next waypoint
+test steppers
+test servos
+test turning
+
+DONE
+test drive motors

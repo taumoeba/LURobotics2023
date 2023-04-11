@@ -231,7 +231,7 @@ void Claw::closeClaw()
 
 /*************************************
  * Turntable
- * not done
+ * maybe done
 ***************************************/
 Turntable::Turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int ms2, int en, int slp)
 {
@@ -461,8 +461,7 @@ void DuckStorage::release()
 ************************************/
 Navigation::Navigation()
 {
-	pos[0] = 0;
-	pos[1] = 0;
+	
 }
 
 void Navigation::updatePos(int x, int y)

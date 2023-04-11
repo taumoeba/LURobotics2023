@@ -106,11 +106,13 @@ class Navigation
 	void moveToWaypoint(int w);
 
 	private:
-	int pos[2];
+	// middle of robot, so left edge is pos[0]-152
+	int pos[2] = {1220,1032}; // starting position
 	int targetPos[2];
 	int recyclingPos[2];
 	int maxPos[2] = {};
-	const int waypoints[5][2] = {{0,0}, {0,0}, {0,0}, {0,0}, {0,0}}; // update
+	// x,y,heading (0 is up, 90 is right, pixy is forward)
+	const int waypoints[5][3] = {{1220,1032,0}, {200,1032,0}, {350,1032,0}, {,}};
 	int lastWaypoint = 0;
 	// Degrees. 0 is "up", 90 is right
 	int heading = 0;

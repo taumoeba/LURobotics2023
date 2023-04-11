@@ -93,7 +93,6 @@ void loop()
 		turntable.closeDoor();
 		// Switch to next state
 		s = searching;
-		break;
 	}
 	else if(s==searching)
 	{
@@ -111,7 +110,6 @@ void loop()
 		// colors: 1=red, 2=green, 3=white, 4=yellow
 		blockInfo = {pixy.returnBlockInfo(0), pixy.returnBlockInfo(1), pixy.returnBlockInfo(2), pixy.returnBlockInfo(3), pixy.returnBlockInfo(4)};
 		s = intercepting;
-		break;
 	}
 	else if(s==intercepting)
 	{
@@ -120,7 +118,6 @@ void loop()
 			// move to center claw on object
 		}
 		s = grabbing;
-		break;
 	}
 	else if(s==grabbing)
 	{
@@ -153,7 +150,6 @@ void loop()
 			}
 		}
 		s = searching;
-		break;
 	}
 	else if(s==recycling)
 	{
@@ -168,7 +164,5 @@ void loop()
 			delay(1000);
 		}
 		s = dropping;
-		break;
 	}
-
 }
