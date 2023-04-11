@@ -174,7 +174,7 @@ void Arm::rotate(int pos)
 	// optional microstepping
 	// digitalWrite(MS1, HIGH); //Pull MS1, and MS2 high to set logic to 1/8th microstep resolution
 	// digitalWrite(MS2, HIGH);
-	if(degrees<0) digitalWrite(_dir, HIGH); // TEST DIRECTIONS
+	if(rotateDegrees[pos]<currRot) digitalWrite(_dir, HIGH); // TEST DIRECTIONS
 	else digitalWrite(_dir, LOW);
 
 	int steps = (abs(rotateDegrees[pos])/360)*200;

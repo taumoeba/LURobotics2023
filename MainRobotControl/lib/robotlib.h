@@ -42,9 +42,9 @@ class Arm
 	private:
 	int _dir, _step, _ms1, _ms2, _en, _slp, currRot, currRaise;
 	// 0=grabbing, 1=ducks, 2=turntable
-	const int[] rotateDegrees = {50, 200, 300}; // UPDATE WITH REAL 
+	int rotateDegrees[3] = {50, 200, 300}; // UPDATE WITH REAL 
 	// 0=grabbing, 1=ducks, 2=turntable, 3=vertical
-	const int[] raiseDegrees = {50, 200, 300, 360}; // UPDATE WITH REAL VALUES
+	const int raiseDegrees[4] = {50, 200, 300, 360}; // UPDATE WITH REAL VALUES
 	Servo raiseServo;
 };
 
@@ -66,7 +66,7 @@ class Turntable
 	public:
 	Turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int ms2, int en, int slp);
 	// Stacks are 0, 1, and 2. 0.5, 1.5, and 2.5 are halfway between each stack.
-	void goToOptimalStack(int color);
+	int goToOptimalStack(int color);
 	float findFullStack();
 	void emptyFullStack(float stack);
 	void goToStack(float dest);
@@ -79,7 +79,7 @@ class Turntable
 	// stack over hole
 	float currentStack = 0.0;
 	// 0=empty, 1=red, 2=green, 3=white, 4=yellow
-	int[3][3] stacks = {{0,0,0},{0,0,0},{0,0,0}};
+	int stacks[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
 	void sleep();
 	void wake();
 };
