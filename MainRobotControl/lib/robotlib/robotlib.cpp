@@ -457,10 +457,40 @@ void DuckStorage::release()
 
 /***********************************
  * Navigation
- * not done
+ * maybe done
 ************************************/
 Navigation::Navigation()
 {
+	// Pin setup
+	pinMode(XSHUT1, OUTPUT);
+	pinMode(XSHUT2, OUTPUT);
+	pinMode(XSHUT3, OUTPUT);
+	pinMode(XSHUT4, OUTPUT);
+
+	// Distance sensor setup
+	// reset sensors
+	digitalWrite(XSHUT1, LOW);
+	digitalWrite(XSHUT2, LOW);
+	digitalWrite(XSHUT3, LOW);
+	digitalWrite(XSHUT4, LOW);
+	delay(10);
+	digitalWrite(XSHUT1, HIGH);
+	digitalWrite(XSHUT2, HIGH);
+	digitalWrite(XSHUT3, HIGH);
+	digitalWrite(XSHUT4, HIGH);
+
+	// set sensor addresses one-by-one
+	digitalWrite(XSHUT2, LOW);
+	digitalWrite(XSHUT3, LOW);
+	digitalWrite(XSHUT4, LOW);
+	lox1.begin(0x30);
+	digitalWrite(XSHUT2, HIGH);
+	lox2.begin(0x31);
+	digitalWrite(XSHUT3, HIGH);
+	lox3.begin(0x32);
+	digitalWrite(XSHUT4, HIGH);
+	lox4.begin(0x33);
+
 	currPos[0] = waypoints[0][0];
 	currPos[1] = waypoints[0][1];
 }
@@ -517,7 +547,7 @@ void Navigation::readDistance()
 
 /***************************************
  * SmartPixy
- * not done
+ * maybe done
 ****************************************/
 SmartPixy::SmartPixy()
 {
@@ -526,8 +556,7 @@ SmartPixy::SmartPixy()
 	pixy.changeProg("color_connected_components");
 }
 
-// Take the biggest block (blocks[0]) that's been around for at least 30 frames (1/2 second)
-// and return its index, otherwise return -1
+// Take the biggest block (blocks[0]) that's been around for at least 30 frames (1/2 second) and return its index, otherwise return -1
 int16_t SmartPixy::acquireBlock()
 {
 	if (pixy.ccc.numBlocks && pixy.ccc.blocks[0].m_age>30)
@@ -557,7 +586,6 @@ int SmartPixy::returnBlockInfo(int x)
 	static int16_t index = -1;
 	Block *block=NULL;
 
-	Serial.println("Place Duck directly in front of pixy cam, 6 inches away");
 	for(int i=10; i>0; i--) Serial.println("i");
 	while(!block || block->m_age < 100)
 	{
@@ -572,7 +600,7 @@ int SmartPixy::returnBlockInfo(int x)
 		// If we've found a block, find it, track it
 		if (index>=0) block = trackBlock(index);
 
-		// If we're able to track it, move motors
+		// If we're able to track it, report info
 		if (block) 
 		{
 			// colors: 1=red, 2=green, 3=white, 4=yellow
@@ -584,35 +612,8 @@ int SmartPixy::returnBlockInfo(int x)
 			else return -1;
 		}
 	}
+	return -1;
 }
-
-/* PIXY CAM STUFF -----------------------------------------------------
-static int16_t blockIndex = -1;
-Block *block=NULL;
-pixy.ccc.getBlocks();
-if (blockIndex==-1) // search....
-{
-Serial.println("Searching for block...");
-blockIndex = acquireBlock();
-if (blockIndex>=0)
-	Serial.println("Found block!");
-}
-// If we've found a block, find it, track it
-if (blockIndex>=0)
-	block = trackBlock(blockIndex);
-
-// If we're able to track it, do stuff
-if (block)
-{
-	Serial.println("Tracking block!");
-block->print();
-}
-else // no object detected, go into search state
-{
-	Serial.println("No objects detected");
-index = -1; // set search state
-}
-// END PIXY CAM STUFF --------------------------------------------------*/
 
 #endif
 #endif
