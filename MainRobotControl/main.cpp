@@ -153,9 +153,9 @@ void loop()
 	}
 	else if(s==recycling)
 	{
-		// recycling is waypoint 99
-		nav.moveToWaypoint(99);
-		nav.rotateToHeading(180);
+		// recycling is waypoint 25
+		nav.moveToWaypoint(25);
+		//nav.rotateToHeading(180); // should already be in correct orientation
 		ducks.tilt();
 		ducks.release();
 		while(true)

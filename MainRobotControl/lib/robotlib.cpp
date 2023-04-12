@@ -37,7 +37,7 @@ DriveMotors::DriveMotors(int PWM1, int DIR1, int PWM2, int DIR2, int PWM3, int D
 	pinMode(dir4, OUTPUT);
 
 	digitalWrite(dir1, HIGH);
-	digitalWrite(dir2, LOW);
+	digitalWrite(dir2, HIGH);
 	digitalWrite(dir3, HIGH);
 	digitalWrite(dir4, LOW);
 }
@@ -68,7 +68,7 @@ void DriveMotors::backward(int speed)
 
 void DriveMotors::right(int speed)
 {
-	digitalWrite(dir2, HIGH);
+	digitalWrite(dir2, LOW); // test
 	digitalWrite(dir4, HIGH);
 	
 	if(speed > 255) speed = 255;
@@ -80,7 +80,7 @@ void DriveMotors::right(int speed)
 
 void DriveMotors::left(int speed)
 {
-	digitalWrite(dir2, LOW);
+	digitalWrite(dir2, HIGH); // test
 	digitalWrite(dir4, LOW);
 	
 	if(speed > 255) speed = 255;
@@ -90,11 +90,11 @@ void DriveMotors::left(int speed)
 	analogWrite(pwm4, speed);
 }
 
-void DriveMotors::turn(int dir, int speed)
+void DriveMotors::turn(bool dir, int speed)
 {
 	// experiment with directions but i think they should all be the same
 	digitalWrite(dir1, dir);
-	digitalWrite(dir2, dir);
+	digitalWrite(dir2, !dir);
 	digitalWrite(dir3, dir);
 	digitalWrite(dir4, dir);
 	analogWrite(pwm1, speed);
@@ -461,28 +461,51 @@ void DuckStorage::release()
 ************************************/
 Navigation::Navigation()
 {
-	
-}
-
-void Navigation::updatePos(int x, int y)
-{
-	pos[1] = x;
-	pos[2] = y;
+	currPos[0] = waypoints[0][0];
+	currPos[1] = waypoints[0][1];
 }
 
 void Navigation::moveToWaypoint(int w)
 {
-	// check orientation w/ respect to waypoint, rotate if needed
-	// drive to waypoint (driveChunkTime)
-	// stop
-}
+	// might work
+	// larger target x means drive right
+	// larger target y means drive backward (down)
+	targetPos[0] = waypoints[w][0];
+	targetPos[1] = waypoints[w][1];
 
+	int horiDiff = targetPos[0] - currPos[0];
+	int vertDiff = targetPos[1] - currPos[1];
+
+	if(horiDiff>0)
+	{
+		drive.right(driveSpeed);
+		delay(milliPerMilli*abs(horiDiff));
+		drive.stop();
+	} else if(horiDiff<0)
+	{
+		drive.left(driveSpeed);
+		delay(milliPerMilli*abs(horiDiff));
+		drive.stop();
+	}
+	if(vertDiff>0)
+	{
+		drive.backward(driveSpeed);
+		delay(milliPerMilli*abs(horiDiff));
+		drive.stop();
+	} else if(vertDiff<0)
+	{
+		drive.forward(driveSpeed);
+		delay(milliPerMilli*abs(horiDiff));
+		drive.stop();
+	}
+}
+/*
 void Navigation::rotateToHeading(int h)
 {
 	// check current heading
 	// rotate if necessary
 }
-
+*/
 void Navigation::readDistance()
 {
 	lox1.rangingTest(&measure1, false); 

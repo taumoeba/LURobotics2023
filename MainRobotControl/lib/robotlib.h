@@ -21,7 +21,7 @@ class DriveMotors
     // speed is 0-255
     void left(int speed);
     // dir=0 is left, dir=1 is right. speed is 0-255
-    void turn(int dir, int speed);
+    void turn(bool dir, int speed);
     void stop();
 
     private:
@@ -102,20 +102,18 @@ class Navigation
 {
 	public:
 	Navigation();
-	void rotateToHeading(int h);
+	//void rotateToHeading(int h);
 	void moveToWaypoint(int w);
 
 	private:
 	// middle of robot, so left edge is pos[0]-152
-	int pos[2] = {1220,1032}; // starting position
+	int currPos[2];
 	int targetPos[2];
 	int recyclingPos[2];
-	int maxPos[2] = {};
-	// x,y,heading (0 is up, 90 is right, pixy is forward)
-	const int waypoints[5][3] = {{1220,1032,0}, {200,1032,0}, {350,1032,0}, {,}};
-	int lastWaypoint = 0;
+	// x,y in mm from top left of board
+	const int waypoints[26][2] = {{1220,1032}, {200,1032}, {200,200}, {300,200}, {300,500}, {200,500}, {200,1000}, {400,1000}, {700,1000}, {1000,1000}, {1300,1000}, {1600,1000}, {1900,1000}, {1900,700}, {1600,700}, {1300,700}, {1000,700}, {700,700}, {400,700}, {400,400}, {700,400}, {1000,400}, {1300,400}, {1600,400}, {1900,400}, {1800,200}};
 	// Degrees. 0 is "up", 90 is right
-	int heading = 0;
+	int currHeading = 0;
 
 	DriveMotors drive = DriveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
 	Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
@@ -128,7 +126,6 @@ class Navigation
 	VL53L0X_RangingMeasurementData_t measure4;
 
 	void readDistance();
-	void updatePos(int x, int y);
 };
 
 class SmartPixy

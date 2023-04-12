@@ -1,3 +1,5 @@
+Motor 2 polarity is backward
+
 Field size (inside the walls, according to build document): 
 91.625" x 46.625"
 2327.275 x 1184.275 mm
@@ -37,17 +39,30 @@ light switch: (2327,559), (2327,660)
 
 
 WAYPOINTS
-start square {1220,1032,0}
-food storage 1 {200,1032,0}
+start square {1220,1032}
+food storage 1 {200,1032}
 (check color of other food storage)
-food storage 2
+food storage 2 {200,200}
 (drop first chips)
-food storage 1
+100mm to the right {300,200}
+1 robot length down {300,500}
+100mm to the left {200,500}
+food storage 1 {200,1000}
 (drop second chips)
-move to first searching waypoint
+first searching waypoint {400,1000}
 searching:
-    left to right, move forward after each row
-recycling
+    left to right
+        {700,1000}, {1000,1000}, {1300,1000}, {1600,1000}, {1900,1000}
+            right side of robot is at 2050 at last waypoint, board is 2327
+    move forward
+        {1900,700}
+    right to left
+        {1600,700}, {1300,700}, {1000,700}, {700,700}, {400,700} 
+    forward
+        {400,400}
+    left to right
+        {700,400}, {1000,400}, {1300,400}, {1600,400}, {1900,400}
+recycling {1800,200}
 
 
 TODO
