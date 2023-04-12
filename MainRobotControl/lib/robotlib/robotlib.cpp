@@ -18,6 +18,7 @@
 // it's used by Navigation, which is called by MainRobotControl
 DriveMotors::DriveMotors(int PWM1, int DIR1, int PWM2, int DIR2, int PWM3, int DIR3, int PWM4, int DIR4)
 {
+	if(DEBUG) Serial.println("Initializing drive motors");
 	pwm1 = PWM1;
 	pwm2 = PWM2;
 	pwm3 = PWM3;
@@ -44,6 +45,7 @@ DriveMotors::DriveMotors(int PWM1, int DIR1, int PWM2, int DIR2, int PWM3, int D
 
 void DriveMotors::forward(int speed)
 {
+	if(DEBUG) Serial.println("Driving forward");
 	digitalWrite(dir1, HIGH);
 	digitalWrite(dir3, HIGH);
 	
@@ -56,6 +58,7 @@ void DriveMotors::forward(int speed)
 
 void DriveMotors::backward(int speed)
 {
+	if(DEBUG) Serial.println("Driving backward");
 	digitalWrite(dir1, LOW);
 	digitalWrite(dir3, LOW);
 	
@@ -68,6 +71,7 @@ void DriveMotors::backward(int speed)
 
 void DriveMotors::right(int speed)
 {
+	if(DEBUG) Serial.println("Driving right");
 	digitalWrite(dir2, LOW); // test
 	digitalWrite(dir4, HIGH);
 	
@@ -80,6 +84,7 @@ void DriveMotors::right(int speed)
 
 void DriveMotors::left(int speed)
 {
+	if(DEBUG) Serial.println("Driving left");
 	digitalWrite(dir2, HIGH); // test
 	digitalWrite(dir4, LOW);
 	
@@ -92,6 +97,7 @@ void DriveMotors::left(int speed)
 
 void DriveMotors::turn(bool dir, int speed)
 {
+	if(DEBUG) Serial.println("Turning");
 	// experiment with directions but i think they should all be the same
 	digitalWrite(dir1, dir);
 	digitalWrite(dir2, !dir);
@@ -105,6 +111,7 @@ void DriveMotors::turn(bool dir, int speed)
 
 void DriveMotors::stop()
 {
+	if(DEBUG) Serial.println("Stopping");
 	analogWrite(pwm1,0);
 	analogWrite(pwm2,0);
 	analogWrite(pwm3,0);
@@ -118,6 +125,7 @@ void DriveMotors::stop()
 *************************************/
 Arm::Arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
 {
+	if(DEBUG) Serial.println("Initializing arm");
 	pinMode(_dir, OUTPUT);
 	pinMode(_step, OUTPUT);
 	pinMode(_ms1, OUTPUT);
@@ -150,6 +158,7 @@ Arm::Arm(int pwm, int dir, int step, int ms1, int ms2, int en, int slp)
 
 void Arm::raise(int pos)
 {
+	if(DEBUG) Serial.println("Raising arm");
 	if(raiseDegrees[pos] > currRaise)
 	{
 		for(int i=currRaise; i<raiseDegrees[pos]; i++)
@@ -171,6 +180,7 @@ void Arm::raise(int pos)
 // negative degrees to go counterclockwise
 void Arm::rotate(int pos)
 {
+	if(DEBUG) Serial.println("Rotating arm");
 	// optional microstepping
 	// digitalWrite(MS1, HIGH); //Pull MS1, and MS2 high to set logic to 1/8th microstep resolution
 	// digitalWrite(MS2, HIGH);
@@ -190,11 +200,13 @@ void Arm::rotate(int pos)
 
 void Arm::sleep()
 {
+	if(DEBUG) Serial.println("Putting arm to sleep");
 	digitalWrite(_slp, LOW);
 }
 
 void Arm::wake()
 {
+	if(DEBUG) Serial.println("Waking up arm");
 	digitalWrite(_slp, HIGH);
 }
 
@@ -205,6 +217,7 @@ void Arm::wake()
 **********************************/
 Claw::Claw(int PWM)
 {
+	if(DEBUG) Serial.println("Initializing claw");
 	pinMode(PWM, OUTPUT);
 	clawServo.attach(PWM);
 	//Servo myservo;
@@ -212,6 +225,7 @@ Claw::Claw(int PWM)
 
 void Claw::openClaw()
 {
+	if(DEBUG) Serial.println("Opening claw");
 	for(int i=0; i<openDegrees; i++)
 	{
 		clawServo.write(i);
@@ -221,6 +235,7 @@ void Claw::openClaw()
 
 void Claw::closeClaw()
 {
+	if(DEBUG) Serial.println("Closing claw");
 	for(int i=openDegrees; i>closedDegrees; i--)
 	{
 		clawServo.write(i);
@@ -235,6 +250,7 @@ void Claw::closeClaw()
 ***************************************/
 Turntable::Turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int ms2, int en, int slp)
 {
+	if(DEBUG) Serial.println("Initializing turntable");
 	_doorDir = doorDir;
 	_doorPWM = doorPWM;
 	_dir = dir;
@@ -269,6 +285,7 @@ Turntable::Turntable(int doorDir, int doorPWM, int dir, int step, int ms1, int m
 // correct pedestal order (bottom to top): white, green, red
 int Turntable::goToOptimalStack(int color)
 {
+	if(DEBUG) Serial.println("Rotating to optimal stack");
 	// deciding stack
 	// colors: 1=red, 2=green, 3=white
 	float dest = 10.0; // 10 means stack not found
@@ -331,6 +348,7 @@ int Turntable::goToOptimalStack(int color)
 
 void Turntable::goToStack(float dest)
 {
+	if(DEBUG) Serial.println("Going to stack");
 	// moving to stack
 	// TEST
 	if(currentStack-dest>0) 
@@ -367,6 +385,7 @@ void Turntable::goToStack(float dest)
 
 float Turntable::findFullStack()
 {
+	if(DEBUG) Serial.println("Finding full stack");
 	float stack = -1.0;
 	for(int i=0; i<2; i++)
 	{
@@ -380,6 +399,7 @@ float Turntable::findFullStack()
 
 void Turntable::emptyFullStack(float stack)
 {
+	if(DEBUG) Serial.println("Emptying full stack");
 	goToStack(stack);
 	openDoor();
 	delay(1000); // TEST
@@ -391,6 +411,7 @@ void Turntable::emptyFullStack(float stack)
 
 void Turntable::openDoor()
 {
+	if(DEBUG) Serial.println("Opening door");
 	digitalWrite(_doorDir, HIGH); // test direction
 	analogWrite(_doorPWM, 127); // test speed
 	delay(1000); // test duration
@@ -399,6 +420,7 @@ void Turntable::openDoor()
 
 void Turntable::closeDoor()
 {
+	if(DEBUG) Serial.println("Closing door");
 	digitalWrite(_doorDir, LOW); // test direction
 	analogWrite(_doorPWM, 127); // test speed
 	delay(1000); // test duration
@@ -407,11 +429,13 @@ void Turntable::closeDoor()
 
 void Turntable::sleep()
 {
+	if(DEBUG) Serial.println("Putting turntable to sleep");
 	digitalWrite(_slp, LOW);
 }
 
 void Turntable::wake()
 {
+	if(DEBUG) Serial.println("Waking turntable up");
 	digitalWrite(_slp, HIGH);
 }
 
@@ -422,6 +446,7 @@ void Turntable::wake()
 ******************************************/
 DuckStorage::DuckStorage(int solenoid, int pwm1, int pwm2)
 {
+	if(DEBUG) Serial.println("Initializing duck storage");
 	_solenoid = solenoid;
 	_pwm1 = pwm1;
 	_pwm2 = pwm2;
@@ -438,6 +463,7 @@ DuckStorage::DuckStorage(int solenoid, int pwm1, int pwm2)
 
 void DuckStorage::tilt()
 {
+	if(DEBUG) Serial.println("Tilting duck storage");
 	for(int i=1; i<=tiltDegrees; i++)
 	{
 		servo1.write(i);
@@ -448,6 +474,7 @@ void DuckStorage::tilt()
 
 void DuckStorage::release()
 {
+	if(DEBUG) Serial.println("releasing duck storage");
 	digitalWrite(_solenoid, HIGH);
 	// we could probably just get rid of these two lines if we're short on time
 	delay(2000);
@@ -461,6 +488,7 @@ void DuckStorage::release()
 ************************************/
 Navigation::Navigation()
 {
+	if(DEBUG) Serial.println("Initializing navigation");
 	// Pin setup
 	pinMode(XSHUT1, OUTPUT);
 	pinMode(XSHUT2, OUTPUT);
@@ -497,6 +525,7 @@ Navigation::Navigation()
 
 void Navigation::moveToWaypoint(int w)
 {
+	if(DEBUG) Serial.println("Moving to waypoint");
 	// might work
 	// larger target x means drive right
 	// larger target y means drive backward (down)
@@ -538,12 +567,12 @@ void Navigation::rotateToHeading(int h)
 */
 void Navigation::readDistance()
 {
+	if(DEBUG) Serial.println("reading distance sensors");
 	lox1.rangingTest(&measure1, false); 
 	lox2.rangingTest(&measure2, false);
 	lox3.rangingTest(&measure3, false);
 	lox4.rangingTest(&measure4, false);
 }
-
 
 /***************************************
  * SmartPixy
@@ -551,9 +580,11 @@ void Navigation::readDistance()
 ****************************************/
 SmartPixy::SmartPixy()
 {
+	if(DEBUG) Serial.println("Initializing pixy camera");
 	//Pixy2 pixy;
 	pixy.init();
 	pixy.changeProg("color_connected_components");
+	pixy.setLamp(1,1);
 }
 
 // Take the biggest block (blocks[0]) that's been around for at least 30 frames (1/2 second) and return its index, otherwise return -1
@@ -583,6 +614,7 @@ Block* SmartPixy::trackBlock(uint8_t index)
 
 int SmartPixy::returnBlockInfo(int x)
 {
+	if(DEBUG) Serial.println("returning block info");
 	static int16_t index = -1;
 	Block *block=NULL;
 

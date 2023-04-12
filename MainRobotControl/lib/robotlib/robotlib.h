@@ -104,6 +104,7 @@ class Navigation
 	Navigation();
 	//void rotateToHeading(int h);
 	void moveToWaypoint(int w);
+	DriveMotors drive = DriveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
 
 	private:
 	// middle of robot, so left edge is pos[0]-152
@@ -115,7 +116,6 @@ class Navigation
 	// Degrees. 0 is "up", 90 is right
 	int currHeading = 0;
 
-	DriveMotors drive = DriveMotors(DC_PWM1, DC_DIR1, DC_PWM2, DC_DIR2, DC_PWM3, DC_DIR3, DC_PWM4, DC_DIR4);
 	Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
 	Adafruit_VL53L0X lox2 = Adafruit_VL53L0X();
 	Adafruit_VL53L0X lox3 = Adafruit_VL53L0X();
