@@ -45,19 +45,32 @@ void loop()
 	if(s==foodChipDropoff)
 	{
     	if(DEBUG) Serial.println("food chip dropoff");
-		// Go to square one
+		// food storage 1
 		currentWaypoint++;
 		nav.moveToWaypoint(currentWaypoint);
-		// Drop first batch of chips
+		// check color
+		// food storage 2
+		currentWaypoint++;
+		nav.moveToWaypoint(currentWaypoint);
+		// drop first chips -- IMPLEMENT
 		turntable.goToStack(1.0);
 		turntable.openDoor();
 		delay(1000); // TEST
 		turntable.closeDoor();
-		// Go to square two
+		// 100mm to the right
 		currentWaypoint++;
 		nav.moveToWaypoint(currentWaypoint);
-		// Drop second batch of chips
-		turntable.goToStack(2.0);
+		// 1 robot length down
+		currentWaypoint++;
+		nav.moveToWaypoint(currentWaypoint);
+		// 100mm to the left
+		currentWaypoint++;
+		nav.moveToWaypoint(currentWaypoint);
+		// food storage 1
+		currentWaypoint++;
+		nav.moveToWaypoint(currentWaypoint);
+		// drop second chips -- IMPLEMENT
+		turntable.goToStack(1.0);
 		turntable.openDoor();
 		delay(1000); // TEST
 		turntable.closeDoor();
@@ -67,20 +80,20 @@ void loop()
 	else if(s==searching)
 	{
 		if(DEBUG) Serial.println("searching");
-			float fullStack=turntable.findFullStack();
-			if(fullStack!=-1.0) // full stack was found
-			{
-				// UPDATE TO AVOID DRIVING OVER STACK WHEN GOING RIGHT TO LEFT
-				nav.moveToWaypoint(currentWaypoint-1); // drive to previous waypoint
-				// rotate for optimal stack dropping
-				turntable.emptyFullStack(fullStack);
-				// rotate back
-				nav.moveToWaypoint(currentWaypoint); // move back to current waypoint
-			}
-			currentWaypoint++;
-			nav.moveToWaypoint(currentWaypoint);
-			// colors: 1=red, 2=green, 3=white, 4=yellow
-			//blockInfo = {pixy.returnBlockInfo(0), pixy.returnBlockInfo(1), pixy.returnBlockInfo(2), pixy.returnBlockInfo(3), pixy.returnBlockInfo(4)};
+		float fullStack=turntable.findFullStack();
+		if(fullStack!=-1.0) // full stack was found
+		{
+			// UPDATE TO AVOID DRIVING OVER STACK WHEN GOING RIGHT TO LEFT
+			nav.moveToWaypoint(currentWaypoint-1); // drive to previous waypoint
+			// rotate for optimal stack dropping
+			turntable.emptyFullStack(fullStack);
+			// rotate back
+			nav.moveToWaypoint(currentWaypoint); // move back to current waypoint
+		}
+		currentWaypoint++;
+		nav.moveToWaypoint(currentWaypoint);
+		// colors: 1=red, 2=green, 3=white, 4=yellow
+		//blockInfo = {pixy.returnBlockInfo(0), pixy.returnBlockInfo(1), pixy.returnBlockInfo(2), pixy.returnBlockInfo(3), pixy.returnBlockInfo(4)};
 		blockInfo[0] = pixy.returnBlockInfo(0);
 		blockInfo[1] = pixy.returnBlockInfo(1);
 		blockInfo[2] = pixy.returnBlockInfo(2);

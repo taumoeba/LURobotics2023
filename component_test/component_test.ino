@@ -9,6 +9,7 @@
 #define DC_PWM4 8
 #define DC_PWM5 9 // door
 
+/*
 #define STEP_DIR1 23
 #define STEP1 22
 #define MS1_1 21
@@ -21,6 +22,7 @@
 #define MS2_2 40
 #define EN2 39
 #define SLP2 38
+*/
 
 void setup() {
   // put your setup code here, to run once:
@@ -34,7 +36,7 @@ void setup() {
   pinMode(DC_PWM3, OUTPUT);
   pinMode(DC_PWM4, OUTPUT);
   pinMode(DC_PWM5, OUTPUT);
-
+/*
   pinMode(STEP_DIR1, OUTPUT);
   pinMode(STEP1, OUTPUT);
   pinMode(MS1_1, OUTPUT);
@@ -54,10 +56,11 @@ void setup() {
   digitalWrite(SLP2, HIGH);
   digitalWrite(STEP1, LOW);
   digitalWrite(STEP2, LOW);
+  */
 }
 
 void loop() {
-    /*
+    
   // DC MOTORS
   digitalWrite(DC_DIR1, HIGH);
   digitalWrite(DC_DIR2, HIGH);
@@ -91,8 +94,8 @@ void loop() {
   analogWrite(DC_PWM2, 0);
   analogWrite(DC_PWM4, 0);
   delay(2000);
-  */
-
+  
+/*
     // STEPPER MOTORS
     digitalWrite(STEP_DIR1, LOW);
     digitalWrite(STEP_DIR2, LOW);
@@ -118,4 +121,5 @@ void loop() {
         delay(0.1);
     }
     delay(2000);
+    */
 }
